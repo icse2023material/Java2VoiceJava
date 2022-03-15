@@ -135,14 +135,14 @@ public class FileAnalysis {
                     if (methodDeclaration.isStatic())res.append("static ");
                     res.append("function ");
                     res.append(methodDeclaration.getName().getIdentifier()).append(" \n");
-                    res.append(methodDeclaration.getType()).append(" \n");
+                    res.append("type ").append(methodDeclaration.getType()).append(" \n");
                     if (methodDeclaration.getParameters().size()>0){
                         for (Parameter parameter : methodDeclaration.getParameters()) {
-                            res.append(
+                            res.append("type ").append(
                                     TypeUtils.analysisVariableType(
                                             parameter.getType(),
                                             false,false,false,false,false,parameter.getName().getIdentifier()
-                                    )
+                                    ).replace("define ","")
                             );
                         }
                         res.append("move next\n");
