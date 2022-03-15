@@ -79,7 +79,7 @@ public class Expr {
                     break;
                 }
             }
-            res.append(tmpStr).append("\n");
+            res.append(tmpStr).append(" dot ").append(methodCallExpr.getName().getIdentifier()).append("\n");
             if (methodCallExpr.getArguments().size() > 0) {
                 for (Expression argument : methodCallExpr.getArguments()) {
                     res.append(analysisExpr(argument));
