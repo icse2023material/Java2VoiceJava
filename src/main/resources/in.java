@@ -9,6 +9,16 @@ public abstract class Test {
 
     public int returnTest(String str){
         int b = 1;
+        switch (b){
+            case 1:
+                b++;
+                break;
+            case 2:
+                b--;
+                break;
+            default:
+                b=1;
+        }
         b = 2;
         int c;
         String str;
