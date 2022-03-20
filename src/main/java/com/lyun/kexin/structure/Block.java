@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
+import com.lyun.kexin.utils.StringUtils;
 import com.lyun.kexin.utils.TypeUtils;
 
 import java.util.Optional;
@@ -104,7 +105,7 @@ public class Block {
             for (VariableDeclarator variable : variableDeclarationExpr.getVariables()) {
                 res.append(TypeUtils.analysisVariableType(
                         variable.getType(),
-                        false,false,false,false,variableDeclarationExpr.isFinal(),variable.getName().getIdentifier()
+                        false,false,false,false,variableDeclarationExpr.isFinal(), StringUtils.wordSplit(variable.getName().getIdentifier())
                 ));
                 Optional<Expression> initializer = variable.getInitializer();
                 if (initializer.isPresent()){

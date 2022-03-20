@@ -64,7 +64,7 @@ public class FileAnalysis {
         Name tmp = ((PackageDeclaration) node).getName();
         StringBuilder str = new StringBuilder();
         while (true){
-            str.insert(0, tmp.getIdentifier());
+            str.insert(0, StringUtils.wordSplit(tmp.getIdentifier()));
             if (tmp.getChildNodes().size() > 0){
                 str.insert(0, " dot ");
             }else break;
@@ -84,7 +84,7 @@ public class FileAnalysis {
         Name tmp = ((ImportDeclaration) node).getName();
         StringBuilder str = new StringBuilder();
         while (true){
-            str.insert(0, tmp.getIdentifier());
+            str.insert(0, StringUtils.wordSplit(tmp.getIdentifier()));
             if (tmp.getChildNodes().size() > 0){
                 str.insert(0, " dot ");
             }else break;
@@ -101,7 +101,7 @@ public class FileAnalysis {
         if (classOrInterfaceDeclaration.isInterface()){
             // interface
             StringBuilder res = new StringBuilder("define " + (classOrInterfaceDeclaration.isPublic() ? "public interface" : "interface ") +
-                    classOrInterfaceDeclaration.getName().getIdentifier() + "\n");
+                    StringUtils.wordSplit(classOrInterfaceDeclaration.getName().getIdentifier()) + "\n");
             for (BodyDeclaration<?> member : classOrInterfaceDeclaration.getMembers()) {
                 if (member instanceof FieldDeclaration){
                     //变量
@@ -120,7 +120,7 @@ public class FileAnalysis {
             if (classOrInterfaceDeclaration.isAbstract())res.append("abstract ");
             if (classOrInterfaceDeclaration.isFinal())res.append("final ");
             if (classOrInterfaceDeclaration.isStatic())res.append("static ");
-            res.append("class ").append(classOrInterfaceDeclaration.getName().getIdentifier()).append("\n");
+            res.append("class ").append(StringUtils.wordSplit(classOrInterfaceDeclaration.getName().getIdentifier())).append("\n");
             for (BodyDeclaration<?> member : classOrInterfaceDeclaration.getMembers()) {
                 if (member instanceof FieldDeclaration){
                     //变量
@@ -134,14 +134,14 @@ public class FileAnalysis {
                     else if (methodDeclaration.isProtected())res.append("protected ");
                     if (methodDeclaration.isStatic())res.append("static ");
                     res.append("function ");
-                    res.append(methodDeclaration.getName().getIdentifier()).append(" \n");
+                    res.append(StringUtils.wordSplit(methodDeclaration.getName().getIdentifier())).append(" \n");
                     res.append("type ").append(methodDeclaration.getType()).append(" \n");
                     if (methodDeclaration.getParameters().size()>0){
                         for (Parameter parameter : methodDeclaration.getParameters()) {
                             res.append("type ").append(
                                     TypeUtils.analysisVariableType(
                                             parameter.getType(),
-                                            false,false,false,false,false,parameter.getName().getIdentifier()
+                                            false,false,false,false,false,StringUtils.wordSplit(parameter.getName().getIdentifier())
                                     ).replace("define ","")
                             );
                         }
@@ -172,7 +172,9 @@ public class FileAnalysis {
     private static void analysisField(StringBuilder res, FieldDeclaration member) {
         for (VariableDeclarator variable : member.getVariables()) {
             //获取变量类型
-            res.append(TypeUtils.analysisVariableType(variable.getType(),member.isPublic(),member.isPrivate(),member.isProtected(), member.isStatic(), member.isFinal(),variable.getName().getIdentifier()));
+            res.append(TypeUtils.analysisVariableType(variable.getType(),
+                    member.isPublic(),member.isPrivate(),member.isProtected(),
+                    member.isStatic(), member.isFinal(),StringUtils.wordSplit(variable.getName().getIdentifier())));
             //判断是否初始化
             if (variable.getInitializer().isPresent()){
                 String str = analysisInitializer(variable);

@@ -36,11 +36,11 @@ public class TypeUtils {
             if (n == 1){
                 res += type + " variable " + name + "\n";
             }else if (n == 2){
-                res += type.getName().getIdentifier() + " with " + ((ClassOrInterfaceType)type.getChildNodes().get(1)).getName().getIdentifier() +
+                res += StringUtils.wordSplit(type.getName().getIdentifier()) + " with " + StringUtils.wordSplit(((ClassOrInterfaceType)type.getChildNodes().get(1)).getName().getIdentifier()) +
                         " variable " + name +"\n";
             }else if (n == 3){
-                res += type.getName().getIdentifier() + " with " + ((ClassOrInterfaceType)type.getChildNodes().get(1)).getName().getIdentifier() +
-                        " and " + ((ClassOrInterfaceType)type.getChildNodes().get(2)).getName().getIdentifier() +
+                res += StringUtils.wordSplit(type.getName().getIdentifier()) + " with " + StringUtils.wordSplit(((ClassOrInterfaceType)type.getChildNodes().get(1)).getName().getIdentifier()) +
+                        " and " + StringUtils.wordSplit(((ClassOrInterfaceType)type.getChildNodes().get(2)).getName().getIdentifier()) +
                         " variable " + name +"\n";
             }
         }else if (varType instanceof PrimitiveType){

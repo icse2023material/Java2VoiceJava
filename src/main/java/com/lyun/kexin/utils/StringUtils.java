@@ -1,0 +1,27 @@
+package com.lyun.kexin.utils;
+
+public class StringUtils {
+
+    private final static char[] caps = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+
+    /**
+     * 拆分单词
+     * @param str 待拆分的字符串
+     * @return 拆分后的字符串
+     */
+    public static String wordSplit(String str){
+        char[] chars = str.toCharArray();
+        StringBuilder res = new StringBuilder();
+        res.append(chars[0]);
+        for (int i = 1; i < chars.length; i++) {
+            for (int j = 0; j < 26; j++) {
+                if (chars[i] == caps[j]){
+                    res.append(' ');
+                    break;
+                }
+            }
+            res.append(chars[i]);
+        }
+        return res.toString();
+    }
+}

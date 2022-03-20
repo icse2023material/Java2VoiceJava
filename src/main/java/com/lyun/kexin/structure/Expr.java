@@ -4,6 +4,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.lyun.kexin.utils.NumberText;
+import com.lyun.kexin.utils.StringUtils;
 import com.lyun.kexin.utils.SymbolUtil;
 import com.lyun.kexin.utils.TypeUtils;
 
@@ -45,10 +46,10 @@ public class Expr {
             //新建实体
             if (expression.getChildNodes().size() == 1){
                 ClassOrInterfaceType tmp = (ClassOrInterfaceType) expression.getChildNodes().get(0);
-                return "new instance " + tmp.getName().getIdentifier() + "\nmove next\n";
+                return "new instance " + StringUtils.wordSplit(tmp.getName().getIdentifier()) + "\nmove next\n";
             }else {
                 ClassOrInterfaceType tmp = (ClassOrInterfaceType) expression.getChildNodes().get(0);
-                StringBuilder res = new StringBuilder("new instance " + tmp.getName().getIdentifier() + "\n");
+                StringBuilder res = new StringBuilder("new instance " + StringUtils.wordSplit(tmp.getName().getIdentifier()) + "\n");
                 for (int i = 1;i<expression.getChildNodes().size();i++){
                     res.append(analysisExpr((Expression) expression.getChildNodes().get(i)));
                 }
@@ -71,15 +72,15 @@ public class Expr {
             while (tmpExpr.isPresent()){
                 if (tmpExpr.get() instanceof FieldAccessExpr){
                     FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) tmpExpr.get();
-                    tmpStr.insert(0," dot " + fieldAccessExpr.getName().getIdentifier());
+                    tmpStr.insert(0," dot " + StringUtils.wordSplit(fieldAccessExpr.getName().getIdentifier()));
                     tmpExpr = Optional.ofNullable(fieldAccessExpr.getScope());
                 }else if (tmpExpr.get() instanceof NameExpr){
                     NameExpr nameExpr = (NameExpr) tmpExpr.get();
-                    tmpStr.insert(0,nameExpr.getName().getIdentifier());
+                    tmpStr.insert(0,StringUtils.wordSplit(nameExpr.getName().getIdentifier()));
                     break;
                 }
             }
-            res.append(tmpStr).append(" dot ").append(methodCallExpr.getName().getIdentifier()).append("\n");
+            res.append(tmpStr).append(" dot ").append(StringUtils.wordSplit(methodCallExpr.getName().getIdentifier())).append("\n");
             if (methodCallExpr.getArguments().size() > 0) {
                 for (Expression argument : methodCallExpr.getArguments()) {
                     res.append(analysisExpr(argument));
@@ -93,11 +94,11 @@ public class Expr {
             while (tmpExpr.isPresent()){
                 if (tmpExpr.get() instanceof FieldAccessExpr){
                     FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) tmpExpr.get();
-                    res.insert(0," dot " + fieldAccessExpr.getName().getIdentifier());
+                    res.insert(0," dot " + StringUtils.wordSplit(fieldAccessExpr.getName().getIdentifier()));
                     tmpExpr = Optional.ofNullable(fieldAccessExpr.getScope());
                 }else if (tmpExpr.get() instanceof NameExpr){
                     NameExpr nameExpr = (NameExpr) tmpExpr.get();
-                    res.insert(0,nameExpr.getName().getIdentifier());
+                    res.insert(0,StringUtils.wordSplit(nameExpr.getName().getIdentifier()));
                     break;
                 }
             }
@@ -116,7 +117,7 @@ public class Expr {
             for (VariableDeclarator variable : variableDeclarationExpr.getVariables()) {
                 res.append(TypeUtils.analysisVariableType(
                         variable.getType(),false,false,false,false,false,
-                        variable.getName().getIdentifier())
+                        StringUtils.wordSplit(variable.getName().getIdentifier()))
                 );
                 if (variable.getInitializer().isPresent()){
                     res.append(analysisExpr(variable.getInitializer().get()));
