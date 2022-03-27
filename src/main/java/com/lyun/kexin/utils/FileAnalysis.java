@@ -25,6 +25,7 @@ public class FileAnalysis {
 
     private static String toVoiceJava(File file){
         JavaParser javaParser = new JavaParser();
+        StringBuilder res = new StringBuilder();
         try {
             ParseResult<CompilationUnit> parse = javaParser.parse(file);
             if (parse.isSuccessful()){
@@ -35,16 +36,16 @@ public class FileAnalysis {
                     for (Node node : childNodes) {
                         if(node instanceof ImportDeclaration) {
                             //导包
-                            String res = analysisImportNode(node);
-                            System.out.println(res);
+                            res.append(analysisImportNode(node));
+                            //System.out.println(res);
                         }else if(node instanceof PackageDeclaration) {
                             //package
-                            String res = analysisPackageNode(node);
-                            System.out.println(res);
+                            res.append(analysisPackageNode(node));
+                            //System.out.println(res);
                         }else if (node instanceof ClassOrInterfaceDeclaration){
                             //class or interface
-                            String res = analysisClassOrInterface(node);
-                            System.out.println(res);
+                            res.append(analysisClassOrInterface(node));
+                            //System.out.println(res);
                         }
                     }
                 }
@@ -52,7 +53,7 @@ public class FileAnalysis {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return "";
+        return res.toString();
     }
 
     /**
@@ -93,6 +94,7 @@ public class FileAnalysis {
         if (importDeclaration.isStatic()){
             str.insert(0, "import static ");
         }else str.insert(0,"import ");
+        str.append("\n");
         return str.toString();
     }
 
@@ -206,12 +208,12 @@ public class FileAnalysis {
      * 将单独的java文件解析为VoiceJava
      * @param path 文件路径
      */
-    public static void singleFile(String path){
+    public static String singleFile(String path){
         File file = new File(path);
         if (file.getName().split("\\.").length == 1 || !file.getName().split("\\.")[1].equals("java")){
             System.out.println("解析错误,未知的文件格式");
-            return;
+            return null;
         }
-        String res = toVoiceJava(file);
+        return toVoiceJava(file);
     }
 }

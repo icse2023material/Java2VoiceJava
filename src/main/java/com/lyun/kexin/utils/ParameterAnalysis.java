@@ -21,7 +21,7 @@ public class ParameterAnalysis {
                 System.out.println("错误的文件后缀");
                 return;
             }
-            FileAnalysis.singleFile(singleFile.getPath());
+            System.out.println(FileAnalysis.singleFile(singleFile.getPath()));
         }
         //文件夹模式
         if (args.length == 2 && args[1].equals("d")){
@@ -36,8 +36,8 @@ public class ParameterAnalysis {
             }
             List<File> files = FileUtils.getDirJavaFile(args[0]);
             for (File file : files) {
-                System.out.println(file.getName() + "\n");
-                FileAnalysis.singleFile(file.getPath());
+                System.out.println(file.getName() + "=====>\n");
+                System.out.println(FileAnalysis.singleFile(file.getPath()));
             }
         }
     }
