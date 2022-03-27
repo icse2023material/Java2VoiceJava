@@ -4,7 +4,12 @@ import com.lyun.kexin.utils.ParameterAnalysis;
 public class Test {
     public static void main(String[] args) {
 //        System.out.println(FileAnalysis.singleFile("F:\\project\\java_project\\JavaToVoiceJava\\src\\main\\resources\\in.java"));
-        String[] arg = {"F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\javatest","d"};
+
+//        String[] arg = {"F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\javatest","d"};
+//        ParameterAnalysis.analysis(arg);
+
+        String[] arg = {"F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\test\\in"
+                ,"o","F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\test\\out"};
         ParameterAnalysis.analysis(arg);
     }
 }

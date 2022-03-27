@@ -63,4 +63,22 @@ public class FileUtils {
         }
         return res;
     }
+
+    public static List<String> getRelativePath(String dir){
+        File fileDir = new File(dir);
+        List<String> res = new ArrayList<>();
+        if (!fileDir.exists() || !fileDir.isDirectory())return res;
+        Queue<File> queue = new LinkedList<>();
+        queue.add(fileDir);
+        while (!queue.isEmpty()) {
+            File tmp = queue.poll();
+            for (File file : Objects.requireNonNull(tmp.listFiles())) {
+                if (file.isDirectory()) queue.offer(file);
+                else if (getFileExtension(file).equals(".java")){
+                    res.add("/"+file.getAbsolutePath().replace(dir,"").replace(file.getName(),""));
+                }
+            }
+        }
+        return res;
+    }
 }
