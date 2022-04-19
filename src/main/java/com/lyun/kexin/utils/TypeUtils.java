@@ -4,10 +4,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import com.github.javaparser.ast.type.ArrayType;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.Type;
+import com.github.javaparser.ast.type.*;
 
 public class TypeUtils {
 
@@ -48,27 +45,34 @@ public class TypeUtils {
                     break;
                 }
             }
-            typeName.append(" dot ").append(StringUtils.wordSplit(type.getName().getIdentifier()));
+            //typeName.append(" dot ").append(StringUtils.wordSplit(type.getName().getIdentifier()));
             if (type.getTypeArguments().isPresent()){
                 NodeList<Type> types = type.getTypeArguments().get();
                 res.append(typeName).append(" with ");
                 for (int i = 0; i < types.size(); i++) {
-                    ClassOrInterfaceType cor = ((ClassOrInterfaceType) types.get(i));
-                    if (i != types.size() -1){
-                        res.append(cor.getName().getIdentifier()).append(" and ");
+                    String tn;
+                    if(types.get(i) instanceof WildcardType){
+                        WildcardType wildcardType = ((WildcardType) types.get(i));
+                        tn = "any type";
                     }else {
-                        res.append(cor.getName().getIdentifier());
+                        ClassOrInterfaceType cor = ((ClassOrInterfaceType) types.get(i));
+                        tn = cor.getName().getIdentifier();
+                    }
+                    if (i != types.size() -1){
+                        res.append(tn).append(" and ");
+                    }else {
+                        res.append(tn);
                     }
                 }
-                res.append(type).append(" variable ").append(name).append("\n");
+                res.append("\nvariable ").append(name).append("\n");
             }else {
-                res.append(typeName).append(" variable ").append(name).append("\n");
+                res.append(typeName).append("\nvariable ").append(name).append("\n");
             }
 
         }else if (varType instanceof PrimitiveType){
             //基本类型
             PrimitiveType type = (PrimitiveType) varType;
-            res.append(type).append(" variable ").append(name).append("\n");
+            res.append(type).append("\nvariable ").append(name).append("\n");
         }
         return res.toString();
     }

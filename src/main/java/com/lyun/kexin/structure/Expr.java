@@ -1,5 +1,6 @@
 package com.lyun.kexin.structure;
 
+import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -27,9 +28,14 @@ public class Expr {
             if (!((ArrayCreationExpr) expression).getLevels().get(0).getDimension().isPresent()){
                 return "";
             }
-            IntegerLiteralExpr literalExpr = (IntegerLiteralExpr) ((ArrayCreationExpr) expression).getLevels().get(0).getDimension().get();
-            String size = literalExpr.getValue();
-            return "new list " + ((ArrayCreationExpr) expression).getElementType().toString() + " size " + size +"\n";
+            ArrayCreationExpr arrayAccessExpr = ((ArrayCreationExpr) expression);
+            StringBuilder sizeExpr = new StringBuilder();
+            for (ArrayCreationLevel level : arrayAccessExpr.getLevels()) {
+                if (level.getDimension().isPresent()){
+                    sizeExpr.append(Expr.analysisExpr(level.getDimension().get()));
+                }
+            }
+            return "new list " + ((ArrayCreationExpr) expression).getElementType().toString() + " size " + "expression\n" +sizeExpr +"\n";
         }else if (expression instanceof StringLiteralExpr){
             //字符串
             return "string " + ((StringLiteralExpr) expression).getValue() + "\n";
@@ -78,6 +84,15 @@ public class Expr {
                     NameExpr nameExpr = (NameExpr) tmpExpr.get();
                     tmpStr.insert(0,StringUtils.wordSplit(nameExpr.getName().getIdentifier()));
                     break;
+                }else if (tmpExpr.get() instanceof MethodCallExpr){
+                    MethodCallExpr expr = (MethodCallExpr) tmpExpr.get();
+                    //tmpStr.insert(0,"dot " + analysisExpr(expr));
+                    tmpStr.append(analysisExpr(expr));
+                    break;
+                }else if (tmpExpr.get() instanceof EnclosedExpr){
+                    EnclosedExpr expr = ((EnclosedExpr) tmpExpr.get());
+                    tmpStr.append(analysisExpr(expr));
+                    break;
                 }
             }
             res.append(tmpStr).append(" dot ").append(StringUtils.wordSplit(methodCallExpr.getName().getIdentifier())).append("\n");
@@ -124,6 +139,13 @@ public class Expr {
                 }else res.append("move next\n");
             }
             return res.toString();
+        }else if(expression instanceof InstanceOfExpr){
+            InstanceOfExpr instanceOfExpr = ((InstanceOfExpr) expression);
+            String res = "";
+            res += StringUtils.wordSplit(instanceOfExpr.getExpression().toString());
+            res += " instance of ";
+            res += StringUtils.wordSplit(instanceOfExpr.getType().toString()) +"\n";
+            return res;
         }else return "";
     }
 }

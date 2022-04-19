@@ -72,7 +72,7 @@ public class FileAnalysis {
             tmp = (Name) tmp.getChildNodes().get(0);
         }
         str.insert(0, "define package ");
-        return str.toString();
+        return str.toString() + "\n";
     }
 
     /**
@@ -94,6 +94,9 @@ public class FileAnalysis {
         if (importDeclaration.isStatic()){
             str.insert(0, "import static ");
         }else str.insert(0,"import ");
+        if (importDeclaration.isAsterisk()){
+            str.append(" dot star");
+        }
         str.append("\n");
         return str.toString();
     }
@@ -144,7 +147,7 @@ public class FileAnalysis {
                                     TypeUtils.analysisVariableType(
                                             parameter.getType(),
                                             false,false,false,false,false,StringUtils.wordSplit(parameter.getName().getIdentifier())
-                                    ).replace("define ","")
+                                    ).replace("define ","").replace("variable","\nvariable")
                             );
                         }
                         res.append("move next\n");

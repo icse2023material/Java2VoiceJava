@@ -3,13 +3,13 @@ import com.lyun.kexin.utils.ParameterAnalysis;
 
 public class Test {
     public static void main(String[] args) {
-//        System.out.println(FileAnalysis.singleFile("F:\\project\\java_project\\JavaToVoiceJava\\src\\main\\resources\\in.java"));
+        System.out.println(FileAnalysis.singleFile("F:\\workspace\\voice2cod\\grammer\\test.java"));
 
-//        String[] arg = {"F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\javatest","d"};
+//        String[] arg = {"F:\\workspace\\voice2cod\\fastjson-master\\src\\main\\java\\com\\alibaba","d"};
 //        ParameterAnalysis.analysis(arg);
 
-        String[] arg = {"F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\test\\in"
-                ,"o","F:\\workspace\\voice2cod\\voice2cod-dataset-generation\\examples\\test\\out"};
-        ParameterAnalysis.analysis(arg);
+//        String[] arg = {"F:\\workspace\\voice2cod\\fastjson-master\\src\\main\\java\\com\\alibaba"
+//                ,"o","F:\\workspace\\voice2cod\\fastjson-out"};
+//        ParameterAnalysis.analysis(arg);
     }
 }
