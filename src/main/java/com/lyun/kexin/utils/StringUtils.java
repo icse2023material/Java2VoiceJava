@@ -13,10 +13,16 @@ public class StringUtils {
         char[] chars = str.toCharArray();
         StringBuilder res = new StringBuilder();
         res.append(chars[0]);
+        int before = 0;
         for (int i = 1; i < chars.length; i++) {
             for (int j = 0; j < 26; j++) {
                 if (chars[i] == caps[j]){
+                    if (i - before == 1 || chars[i-1] == '_'){
+                        before = i;
+                        break;
+                    }
                     res.append(' ');
+                    before = i;
                     break;
                 }
             }

@@ -25,17 +25,20 @@ public class TypeUtils {
         if (isFinal) res.append("final ");
         if (isStatic) res.append("static ");
 
+        res.append("variable ").append(name).append("\n");
+
 
         if (varType instanceof ArrayType){
             //数组
             ArrayType type = (ArrayType) varType;
-            res.append("list of ").append(type.getComponentType()).append(" variable ").append(name).append("\n");
+            res.append("type list of ").append(type.getComponentType()).append("\n");
         }else if (varType instanceof ClassOrInterfaceType){
             //类类型
             ClassOrInterfaceType type = (ClassOrInterfaceType) varType;
             int n = type.getChildNodes().size();
             StringBuilder typeName = new StringBuilder();
             ClassOrInterfaceType tmp = ((ClassOrInterfaceType) varType);
+            res.append("type ");
             while (true){
                 if (tmp.getScope().isPresent()){
                     typeName.insert(0, " dot " + StringUtils.wordSplit(tmp.getName().getIdentifier()));
@@ -53,7 +56,7 @@ public class TypeUtils {
                     String tn;
                     if(types.get(i) instanceof WildcardType){
                         WildcardType wildcardType = ((WildcardType) types.get(i));
-                        tn = "any type";
+                        tn = "question mark";
                     }else {
                         ClassOrInterfaceType cor = ((ClassOrInterfaceType) types.get(i));
                         tn = cor.getName().getIdentifier();
@@ -64,15 +67,15 @@ public class TypeUtils {
                         res.append(tn);
                     }
                 }
-                res.append("\nvariable ").append(name).append("\n");
+                res.append("\nmove next\n");
             }else {
-                res.append(typeName).append("\nvariable ").append(name).append("\n");
+                res.append("type ").append(typeName).append("\n");
             }
 
         }else if (varType instanceof PrimitiveType){
             //基本类型
             PrimitiveType type = (PrimitiveType) varType;
-            res.append(type).append("\nvariable ").append(name).append("\n");
+            res.append("type ").append(type).append("\n");
         }
         return res.toString();
     }

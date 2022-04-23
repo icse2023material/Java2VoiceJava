@@ -1,6 +1,8 @@
 package com.lyun.kexin.structure;
 
 import com.github.javaparser.ast.ArrayCreationLevel;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -9,7 +11,7 @@ import com.lyun.kexin.utils.StringUtils;
 import com.lyun.kexin.utils.SymbolUtil;
 import com.lyun.kexin.utils.TypeUtils;
 
-import java.util.Optional;
+import java.util.*;
 
 public class Expr {
     /**
@@ -52,10 +54,32 @@ public class Expr {
             //新建实体
             if (expression.getChildNodes().size() == 1){
                 ClassOrInterfaceType tmp = (ClassOrInterfaceType) expression.getChildNodes().get(0);
-                return "new instance " + StringUtils.wordSplit(tmp.getName().getIdentifier()) + "\nmove next\n";
+                StringBuilder res = new StringBuilder("new instance " + StringUtils.wordSplit(tmp.getName().getIdentifier()));
+                if (tmp.getTypeArguments().isPresent()){
+                    res.append(" with ");
+                    for (int i = 0; i < tmp.getTypeArguments().get().size(); i++) {
+                        if (i != tmp.getTypeArguments().get().size() - 1){
+                            res.append(tmp.getTypeArguments().get().get(i)).append(" and ");
+                        }else {
+                            res.append(tmp.getTypeArguments().get().get(i));
+                        }
+                    }
+                }
+                return res.append("\n").toString();
             }else {
                 ClassOrInterfaceType tmp = (ClassOrInterfaceType) expression.getChildNodes().get(0);
-                StringBuilder res = new StringBuilder("new instance " + StringUtils.wordSplit(tmp.getName().getIdentifier()) + "\n");
+                StringBuilder res = new StringBuilder("new instance " + StringUtils.wordSplit(tmp.getName().getIdentifier()));
+                if (tmp.getTypeArguments().isPresent()){
+                    res.append(" with ");
+                    for (int i = 0; i < tmp.getTypeArguments().get().size(); i++) {
+                        if (i != tmp.getTypeArguments().get().size() - 1){
+                            res.append(tmp.getTypeArguments().get().get(i)).append(" and ");
+                        }else {
+                            res.append(tmp.getTypeArguments().get().get(i));
+                        }
+                    }
+                }
+                res.append("\n");
                 for (int i = 1;i<expression.getChildNodes().size();i++){
                     res.append(analysisExpr((Expression) expression.getChildNodes().get(i)));
                 }
@@ -72,36 +96,29 @@ public class Expr {
         }else if (expression instanceof MethodCallExpr){
             //方法调用
             MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
-            StringBuilder res = new StringBuilder("call method ");
-            StringBuilder tmpStr = new StringBuilder();
+            StringBuilder res = new StringBuilder("call ");
+//            StringBuilder tmpStr = new StringBuilder();
             Optional<Expression> tmpExpr = methodCallExpr.getScope();
-            while (tmpExpr.isPresent()){
-                if (tmpExpr.get() instanceof FieldAccessExpr){
-                    FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) tmpExpr.get();
-                    tmpStr.insert(0," dot " + StringUtils.wordSplit(fieldAccessExpr.getName().getIdentifier()));
-                    tmpExpr = Optional.ofNullable(fieldAccessExpr.getScope());
-                }else if (tmpExpr.get() instanceof NameExpr){
-                    NameExpr nameExpr = (NameExpr) tmpExpr.get();
-                    tmpStr.insert(0,StringUtils.wordSplit(nameExpr.getName().getIdentifier()));
-                    break;
-                }else if (tmpExpr.get() instanceof MethodCallExpr){
-                    MethodCallExpr expr = (MethodCallExpr) tmpExpr.get();
-                    //tmpStr.insert(0,"dot " + analysisExpr(expr));
-                    tmpStr.append(analysisExpr(expr));
-                    break;
-                }else if (tmpExpr.get() instanceof EnclosedExpr){
-                    EnclosedExpr expr = ((EnclosedExpr) tmpExpr.get());
-                    tmpStr.append(analysisExpr(expr));
-                    break;
+            if (tmpExpr.isPresent()){
+                Expression scopeExpr = tmpExpr.get();
+                if (scopeExpr instanceof NameExpr){
+                    res.append(((NameExpr) scopeExpr).getName()).append(" dot ");
+                }else {
+                    res.insert(0,analysisExpr(scopeExpr));
+                    //res.append("\n");
                 }
             }
-            res.append(tmpStr).append(" dot ").append(StringUtils.wordSplit(methodCallExpr.getName().getIdentifier())).append("\n");
-            if (methodCallExpr.getArguments().size() > 0) {
-                for (Expression argument : methodCallExpr.getArguments()) {
-                    res.append(analysisExpr(argument));
+            res.append(StringUtils.wordSplit(methodCallExpr.getNameAsString())).append("\n");
+            if (methodCallExpr.getArguments().size() > 0){
+                for (int i = 0; i < methodCallExpr.getArguments().size(); i++) {
+                    Expression argExpr = methodCallExpr.getArguments().get(i);
+                    res.append(analysisExpr(argExpr));
                 }
             }
+            //跳出参数
             res.append("move next\n");
+
+
             return res.toString();
         }else if(expression instanceof FieldAccessExpr){
             StringBuilder res = new StringBuilder();
@@ -146,6 +163,21 @@ public class Expr {
             res += " instance of ";
             res += StringUtils.wordSplit(instanceOfExpr.getType().toString()) +"\n";
             return res;
+        }else if (expression instanceof CastExpr){
+            return "";
+        }else if (expression instanceof LambdaExpr){
+            //Lambda表达式
+            StringBuilder res = new StringBuilder();
+            res.append("lambda expression\n");
+            LambdaExpr lambdaExpr = ((LambdaExpr) expression);
+            for (int i = 0; i < lambdaExpr.getParameters().size(); i++) {
+                Parameter parameter = lambdaExpr.getParameters().get(i);
+                res.append("variable ").append(parameter.getName().getIdentifier()).append("\n");
+            }
+            res.append("move next\n");
+            Block.analysisStmt(lambdaExpr.getBody(),res);
+            res.append("move next\n");
+            return res.toString();
         }else return "";
     }
 }

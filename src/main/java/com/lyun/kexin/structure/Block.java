@@ -137,14 +137,18 @@ public class Block {
         }else if (expression instanceof MethodCallExpr){
             //调用方法
             res.append(Expr.analysisExpr(expression));
+            res.append("move next\n");
         }else if (expression instanceof AssignExpr){
             //赋值块
             res.append("let ");
             res.append(Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n',' '));
             res.append("equal ");
             res.append(Expr.analysisExpr(((AssignExpr) expression).getValue()));
+            res.append("\n");
         }else if (expression instanceof UnaryExpr){
             res.append(Expr.analysisExpr(expression)).append("\n");
+        }else {
+            res.append(Expr.analysisExpr(expression));
         }
         return res.toString();
     }
