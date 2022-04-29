@@ -160,7 +160,7 @@ public class Expr {
             InstanceOfExpr instanceOfExpr = ((InstanceOfExpr) expression);
             String res = "";
             res += StringUtils.wordSplit(instanceOfExpr.getExpression().toString());
-            res += " instance of ";
+            res += " instance of\ntype ";
             res += StringUtils.wordSplit(instanceOfExpr.getType().toString()) +"\n";
             return res;
         }else if (expression instanceof CastExpr){

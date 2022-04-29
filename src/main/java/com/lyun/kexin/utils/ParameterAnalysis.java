@@ -18,6 +18,9 @@ public class ParameterAnalysis {
             }
             res.append("]");
             System.out.println(res);
+            for (int i = 0; i < 22; i++) {
+                System.out.print("\b");
+            }
         }
     }
 
