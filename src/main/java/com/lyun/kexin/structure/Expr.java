@@ -164,7 +164,11 @@ public class Expr {
             res += StringUtils.wordSplit(instanceOfExpr.getType().toString()) +"\n";
             return res;
         }else if (expression instanceof CastExpr){
-            return "";
+            CastExpr castExpr = ((CastExpr) expression);
+            String res = "cast expression\n";
+            res+= TypeUtils.getType(castExpr.getType());
+            res+= Expr.analysisExpr(castExpr.getExpression());
+            return res;
         }else if (expression instanceof LambdaExpr){
             //Lambda表达式
             StringBuilder res = new StringBuilder();
