@@ -126,6 +126,26 @@ public class FileAnalysis {
             if (classOrInterfaceDeclaration.isFinal())res.append("final ");
             if (classOrInterfaceDeclaration.isStatic())res.append("static ");
             res.append("class ").append(StringUtils.wordSplit(classOrInterfaceDeclaration.getName().getIdentifier())).append("\n");
+
+            if ((classOrInterfaceDeclaration.getImplementedTypes().size() > 0 ||
+                    classOrInterfaceDeclaration.getExtendedTypes().size() > 0 ||
+                    classOrInterfaceDeclaration.getImplementedTypes().size() > 0)){
+                for (int i = 0; i < classOrInterfaceDeclaration.getTypeParameters().size(); i++) {
+                    res.append("type ").append(classOrInterfaceDeclaration.getTypeParameters().get(i).getName().getIdentifier()).append("\n");
+                }
+                res.append("move next\n");
+                for (int i = 0; i < classOrInterfaceDeclaration.getExtendedTypes().size(); i++) {
+                    res.append(TypeUtils.getType(classOrInterfaceDeclaration.getExtendedTypes().get(i)));
+                }
+                res.append("move next\n");
+                for (int i = 0; i < classOrInterfaceDeclaration.getImplementedTypes().size(); i++) {
+                    res.append(TypeUtils.getType(classOrInterfaceDeclaration.getImplementedTypes().get(i)));
+                }
+                res.append("move next\n");
+            }else {
+                res.append("move next body\n");
+            }
+
             for (BodyDeclaration<?> member : classOrInterfaceDeclaration.getMembers()) {
                 if (member instanceof FieldDeclaration){
                     //变量

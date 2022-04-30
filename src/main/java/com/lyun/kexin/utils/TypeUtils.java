@@ -27,7 +27,12 @@ public class TypeUtils {
 
         res.append("variable ").append(name).append("\n");
 
+        res.append(getType(varType));
+        return res.toString();
+    }
 
+    public static String getType(Type varType){
+        StringBuilder res = new StringBuilder();
         if (varType instanceof ArrayType){
             //数组
             ArrayType type = (ArrayType) varType;
@@ -69,7 +74,7 @@ public class TypeUtils {
                 }
                 res.append("\nmove next\n");
             }else {
-                res.append("type ").append(typeName).append("\n");
+                res.append(typeName).append("\n");
             }
 
         }else if (varType instanceof PrimitiveType){

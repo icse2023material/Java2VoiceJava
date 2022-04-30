@@ -1,6 +1,7 @@
 package com.lyun.kexin.structure;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
@@ -100,6 +101,18 @@ public class Block {
                     }
                 }else res.append("move next\n");
             }
+        }else if (statement instanceof TryStmt){
+            TryStmt tryStmt = ((TryStmt) statement);
+            res.append("define try\n");
+            analysisBlock(res,tryStmt.getTryBlock());
+            for (int i = 0; i < tryStmt.getCatchClauses().size(); i++) {
+                CatchClause catchClause = tryStmt.getCatchClauses().get(i);
+                res.append("define catch\n");
+                res.append(Param.analysisParameter(catchClause.getParameter()));
+                analysisBlock(res,catchClause.getBody());
+            }
+
+
         }
     }
 
