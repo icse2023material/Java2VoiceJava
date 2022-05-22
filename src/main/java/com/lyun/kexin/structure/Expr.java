@@ -2,6 +2,7 @@ package com.lyun.kexin.structure;
 
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.*;
@@ -23,7 +24,22 @@ public class Expr {
 
         if (expression instanceof IntegerLiteralExpr){
             //将数值转化为英文数值
-            String num = NumberText.getInstance(NumberText.Lang.English).getText(Integer.parseInt(((IntegerLiteralExpr) expression).getValue()));
+//            long n;
+//            n = Integer.parseInt(((IntegerLiteralExpr) expression).getValue());
+
+            int r = 10;
+            if (((IntegerLiteralExpr) expression).getValue().startsWith("0x"))
+                r = 16;
+            else if (((IntegerLiteralExpr) expression).getValue().startsWith("0b"))
+                r = 2;
+            else if (((IntegerLiteralExpr) expression).getValue().startsWith("0"))
+                r = 8;
+            if (r != 10){
+                return "int " + ((IntegerLiteralExpr) expression).getValue() + "\n";
+            }
+            String tmp = ((IntegerLiteralExpr) expression).getValue();
+            tmp = String.valueOf(Integer.valueOf(tmp,r));
+            String num = NumberText.getInstance(NumberText.Lang.English).getText(tmp);
             return "int " + num + "\n";
         }else if (expression instanceof ArrayCreationExpr){
             //新建数组
@@ -46,10 +62,16 @@ public class Expr {
             return "boolean " + (((BooleanLiteralExpr) expression).getValue() ? "true":"false") + "\n";
         }else if (expression instanceof ArrayAccessExpr){
             //索引数组
-            return "variable " + ((ArrayAccessExpr) expression).getName().toString() + " index " + ((ArrayAccessExpr) expression).getIndex().toString() + "\n";
+            ArrayAccessExpr arrayAccessExpr = ((ArrayAccessExpr) expression);
+            String res = "variable " + StringUtils.wordSplit(arrayAccessExpr.getName().toString()) + " index expression\n";
+            Expression index = arrayAccessExpr.getIndex();
+            res += Expr.analysisExpr(index);
+            return res;
         }else if (expression instanceof NameExpr){
             //变量名
-            return "variable " + ((NameExpr) expression).getName()+"\n";
+//            NameExpr nameExpr = ((NameExpr) expression);
+//            if (nameExpr.)
+            return "variable " + StringUtils.wordSplit(((NameExpr) expression).getName().getIdentifier())+"\n";
         }else if(expression instanceof ObjectCreationExpr){
             //新建实体
             if (expression.getChildNodes().size() == 1){
@@ -81,6 +103,10 @@ public class Expr {
                 }
                 res.append("\n");
                 for (int i = 1;i<expression.getChildNodes().size();i++){
+                    if (expression.getChildNodes().get(i) instanceof InitializerDeclaration){
+                        res.append("init function\n");
+                        continue;
+                    }
                     res.append(analysisExpr((Expression) expression.getChildNodes().get(i)));
                 }
                 res.append("move next\n");
@@ -132,6 +158,20 @@ public class Expr {
                     NameExpr nameExpr = (NameExpr) tmpExpr.get();
                     res.insert(0,StringUtils.wordSplit(nameExpr.getName().getIdentifier()));
                     break;
+                }else if (tmpExpr.get() instanceof ThisExpr){
+                    res.insert(0,"this");
+                    break;
+                }else if (tmpExpr.get() instanceof MethodCallExpr){
+                    MethodCallExpr methodCallExpr = ((MethodCallExpr) tmpExpr.get());
+                    res.insert(0,analysisExpr(methodCallExpr));
+                    if (methodCallExpr.getScope().isPresent()){
+                        res.insert(0," dot ");
+                        tmpExpr = methodCallExpr.getScope();
+                    }else break;
+                }else if (tmpExpr.get() instanceof ArrayAccessExpr){
+                    ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr) tmpExpr.get();
+                    res.insert(0, analysisExpr(arrayAccessExpr));
+                    break;
                 }
             }
             res.append("\n");
@@ -182,6 +222,8 @@ public class Expr {
             Block.analysisStmt(lambdaExpr.getBody(),res);
             res.append("move next\n");
             return res.toString();
+        }else if (expression instanceof ThisExpr){
+            return "variable this\n";
         }else return "";
     }
 }

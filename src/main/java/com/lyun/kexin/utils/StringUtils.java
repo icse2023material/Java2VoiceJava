@@ -28,6 +28,6 @@ public class StringUtils {
             }
             res.append(chars[i]);
         }
-        return res.toString();
+        return res.toString().toLowerCase();
     }
 }

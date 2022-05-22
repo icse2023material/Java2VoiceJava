@@ -36,7 +36,7 @@ public class TypeUtils {
         if (varType instanceof ArrayType){
             //数组
             ArrayType type = (ArrayType) varType;
-            res.append("type list of ").append(type.getComponentType()).append("\n");
+            res.append("type list of ").append(StringUtils.wordSplit(type.getComponentType().toString())).append("\n");
         }else if (varType instanceof ClassOrInterfaceType){
             //类类型
             ClassOrInterfaceType type = (ClassOrInterfaceType) varType;
@@ -63,8 +63,12 @@ public class TypeUtils {
                         WildcardType wildcardType = ((WildcardType) types.get(i));
                         tn = "question mark";
                     }else {
-                        ClassOrInterfaceType cor = ((ClassOrInterfaceType) types.get(i));
-                        tn = cor.getName().getIdentifier();
+                        if (types.get(i) instanceof ArrayType) {
+                            tn = "list of " + StringUtils.wordSplit(((ArrayType) types.get(i)).getComponentType().toString());
+                        }else {
+                            ClassOrInterfaceType cor = ((ClassOrInterfaceType) types.get(i));
+                            tn = StringUtils.wordSplit(cor.getName().getIdentifier());
+                        }
                     }
                     if (i != types.size() -1){
                         res.append(tn).append(" and ");
@@ -80,7 +84,7 @@ public class TypeUtils {
         }else if (varType instanceof PrimitiveType){
             //基本类型
             PrimitiveType type = (PrimitiveType) varType;
-            res.append("type ").append(type).append("\n");
+            res.append("type ").append(StringUtils.wordSplit(type.toString())).append("\n");
         }
         return res.toString();
     }

@@ -131,7 +131,7 @@ public class FileAnalysis {
                     classOrInterfaceDeclaration.getExtendedTypes().size() > 0 ||
                     classOrInterfaceDeclaration.getImplementedTypes().size() > 0)){
                 for (int i = 0; i < classOrInterfaceDeclaration.getTypeParameters().size(); i++) {
-                    res.append("type ").append(classOrInterfaceDeclaration.getTypeParameters().get(i).getName().getIdentifier()).append("\n");
+                    res.append("type ").append(StringUtils.wordSplit(classOrInterfaceDeclaration.getTypeParameters().get(i).getName().getIdentifier())).append("\n");
                 }
                 res.append("move next\n");
                 for (int i = 0; i < classOrInterfaceDeclaration.getExtendedTypes().size(); i++) {
@@ -160,17 +160,14 @@ public class FileAnalysis {
                     if (methodDeclaration.isStatic())res.append("static ");
                     res.append("function ");
                     res.append(StringUtils.wordSplit(methodDeclaration.getName().getIdentifier())).append(" \n");
-                    res.append("type ").append(methodDeclaration.getType()).append(" \n");
+                    res.append("type ").append(StringUtils.wordSplit(methodDeclaration.getType().toString())).append(" \n");
                     if (methodDeclaration.getParameters().size()>0){
                         for (Parameter parameter : methodDeclaration.getParameters()) {
-                            res.append("type ").append(
-                                    TypeUtils.analysisVariableType(
-                                            parameter.getType(),
-                                            false,false,false,false,false,StringUtils.wordSplit(parameter.getName().getIdentifier())
-                                    ).replace("define ","").replace("variable","\nvariable")
+                            res.append("variable ").append(parameter.getName().getIdentifier()).append("\n").append(
+                                TypeUtils.getType(parameter.getType())
                             );
                         }
-                        res.append("move next\n");
+                        res.append("move next body\n");
                     }else {
                         res.append("move next\n");
                     }

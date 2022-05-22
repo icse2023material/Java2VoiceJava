@@ -95,7 +95,7 @@ public class ParameterAnalysis {
                     boolean mkdirs = dir.mkdirs();
                     String outName = outPath +
                             files.get(i).getName().replace(".java",".out");
-                    FileWriter writer = new FileWriter(outName,true);
+                    FileWriter writer = new FileWriter(outName,false);
                     assert out != null;
                     writer.write(out);
                     writer.close();

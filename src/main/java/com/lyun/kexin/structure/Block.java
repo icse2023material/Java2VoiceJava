@@ -3,6 +3,7 @@ package com.lyun.kexin.structure;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
 import com.lyun.kexin.utils.StringUtils;
@@ -19,7 +20,7 @@ public class Block {
         }else if (statement instanceof ReturnStmt){
             //返回块
             ReturnStmt returnStmt = (ReturnStmt) statement;
-            res.append("return ");
+            res.append("return expression\n");
             Optional<Expression> expression = returnStmt.getExpression();
             if (expression.isPresent()){
                 res.append(Expr.analysisExpr(expression.get()));
@@ -121,6 +122,10 @@ public class Block {
     public static void analysisBlock(StringBuilder res, BlockStmt blockStmt){
         if (blockStmt.getChildNodes().size()>0){
             for (Node childNode : blockStmt.getChildNodes()) {
+                if (childNode instanceof LineComment){
+                    res.append("comment\n");
+                    continue;
+                }
                 analysisStmt(((Statement) childNode),res);
             }
         }
@@ -151,11 +156,24 @@ public class Block {
             //调用方法
             res.append(Expr.analysisExpr(expression));
             res.append("move next\n");
+            String[] strings = res.toString().split("\n");
+            int i = 0;
+            while (strings[strings.length - 1 - i].equals("move next")){
+                i++;
+            }
+            if (i > 1){
+                StringBuilder tmp = new StringBuilder();
+                for (int l = 0; l < strings.length - i; l++) {
+                    tmp.append(strings[l]).append("\n");
+                }
+                res = new StringBuilder(tmp);
+                res.append("move next statement\n");
+            }
         }else if (expression instanceof AssignExpr){
             //赋值块
             res.append("let ");
-            res.append(Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n',' '));
-            res.append("equal ");
+            res.append(Expr.analysisExpr(((AssignExpr) expression).getTarget()));
+            res.append("equal expression\n");
             res.append(Expr.analysisExpr(((AssignExpr) expression).getValue()));
             res.append("\n");
         }else if (expression instanceof UnaryExpr){
