@@ -2,9 +2,7 @@ package com.lyun.kexin.structure;
 
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.InitializerDeclaration;
-import com.github.javaparser.ast.body.Parameter;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.lyun.kexin.utils.NumberText;
@@ -86,6 +84,11 @@ public class Expr {
                             res.append(tmp.getTypeArguments().get().get(i));
                         }
                     }
+                    if(tmp.getTypeArguments().get().size()==0){
+                      res.append("\nmove next");
+                    }
+                } else {
+                  res.append("\nmove next");
                 }
                 return res.append("\n").toString();
             }else {
@@ -104,7 +107,13 @@ public class Expr {
                 res.append("\n");
                 for (int i = 1;i<expression.getChildNodes().size();i++){
                     if (expression.getChildNodes().get(i) instanceof InitializerDeclaration){
-                        res.append("init function\n");
+//                        res.append("init function\n");
+                        // skip this case
+                        continue;
+                    } else if (expression.getChildNodes().get(i) instanceof ClassOrInterfaceDeclaration){
+                        // skip this case
+                        continue;
+                    } else if (expression.getChildNodes().get(i) instanceof MethodDeclaration){
                         continue;
                     }
                     res.append(analysisExpr((Expression) expression.getChildNodes().get(i)));
@@ -122,17 +131,18 @@ public class Expr {
         }else if (expression instanceof MethodCallExpr){
             //方法调用
             MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
-            StringBuilder res = new StringBuilder("call ");
-//            StringBuilder tmpStr = new StringBuilder();
+            StringBuilder res = new StringBuilder("");
             Optional<Expression> tmpExpr = methodCallExpr.getScope();
             if (tmpExpr.isPresent()){
                 Expression scopeExpr = tmpExpr.get();
                 if (scopeExpr instanceof NameExpr){
-                    res.append(((NameExpr) scopeExpr).getName()).append(" dot ");
+                    res.append(((NameExpr) scopeExpr).getName()).append(" call ");
                 }else {
                     res.insert(0,analysisExpr(scopeExpr));
                     //res.append("\n");
                 }
+            } else {
+              res.append("call ");
             }
             res.append(StringUtils.wordSplit(methodCallExpr.getNameAsString())).append("\n");
             if (methodCallExpr.getArguments().size() > 0){
@@ -142,6 +152,8 @@ public class Expr {
                 }
             }
             //跳出参数
+            res.append("move next\n");
+            //跳出call chain
             res.append("move next\n");
 
 
@@ -178,10 +190,12 @@ public class Expr {
             return res.toString();
         }else if (expression instanceof UnaryExpr){
             UnaryExpr unaryExpr = ((UnaryExpr) expression);
+            String unaryExprInVoiceJava = analysisExpr(unaryExpr.getExpression());
+            unaryExprInVoiceJava = unaryExprInVoiceJava.substring(8);
             if (unaryExpr.getOperator().isPostfix()){
-                return analysisExpr(unaryExpr.getExpression()).replace('\n',' ') + SymbolUtil.getUnarySymbol(unaryExpr.getOperator()) + "\n";
+                return unaryExprInVoiceJava.replace('\n',' ') + SymbolUtil.getUnarySymbol(unaryExpr.getOperator()) + "\n";
             }else if (unaryExpr.getOperator().isPrefix()){
-                return SymbolUtil.getUnarySymbol(unaryExpr.getOperator()).replace('\n',' ') + " " + analysisExpr(unaryExpr.getExpression());
+                return SymbolUtil.getUnarySymbol(unaryExpr.getOperator()).replace('\n',' ') + " " + unaryExprInVoiceJava;
             }else return "";
         }else if (expression instanceof VariableDeclarationExpr){
             VariableDeclarationExpr variableDeclarationExpr = ((VariableDeclarationExpr) expression);
@@ -222,8 +236,13 @@ public class Expr {
             Block.analysisStmt(lambdaExpr.getBody(),res);
             res.append("move next\n");
             return res.toString();
-        }else if (expression instanceof ThisExpr){
+        }else if (expression instanceof ThisExpr) {
             return "variable this\n";
-        }else return "";
+        } else if (expression instanceof  ClassExpr) {
+            String typeCommand = TypeUtils.getType(((ClassExpr)expression).getType());
+            typeCommand = typeCommand.substring(5,typeCommand.length()-2); // remove "type " and "\n"
+            // TODO: Class name must be Capitalized
+            return typeCommand + " dot class\n";
+        } else return "";
     }
 }

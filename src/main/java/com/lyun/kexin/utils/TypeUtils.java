@@ -76,7 +76,11 @@ public class TypeUtils {
                         res.append(tn);
                     }
                 }
-                res.append("\nmove next\n");
+                if(types.size()==0){
+                  res.append("\nmove next\n");
+                } else {
+                  res.append("\n");
+                }
             }else {
                 res.append(typeName).append("\n");
             }

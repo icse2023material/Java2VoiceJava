@@ -87,6 +87,7 @@ public class ParameterAnalysis {
             List<File> files = FileUtils.getDirJavaFile(args[0]);
             List<String> relativePath = FileUtils.getRelativePath(args[0]);
             for (int i = 0; i < files.size(); i++) {
+                System.out.println("Working on: "+ files.get(i).getName());
                 String out = FileAnalysis.singleFile(files.get(i).getPath());
                 try {
                     String outPath = args[2] + "/" +
@@ -94,7 +95,7 @@ public class ParameterAnalysis {
                     File dir = new File(outPath);
                     boolean mkdirs = dir.mkdirs();
                     String outName = outPath +
-                            files.get(i).getName().replace(".java",".out");
+                            files.get(i).getName().replace(".java",".voiceJava");
                     FileWriter writer = new FileWriter(outName,false);
                     assert out != null;
                     writer.write(out);
