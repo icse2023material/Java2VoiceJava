@@ -123,7 +123,7 @@ public class Block {
         if (blockStmt.getChildNodes().size()>0){
             for (Node childNode : blockStmt.getChildNodes()) {
                 if (childNode instanceof LineComment){
-                    res.append("comment\n");
+//                    res.append("comment\n");
                     continue;
                 }
                 analysisStmt(((Statement) childNode),res);

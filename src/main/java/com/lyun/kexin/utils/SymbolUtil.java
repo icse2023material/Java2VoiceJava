@@ -62,6 +62,8 @@ public class SymbolUtil {
                 return "minus minus";
             case "++":
                 return "plus plus";
+            case "!":
+                return "not expression";
             default:
                 return "";
         }
