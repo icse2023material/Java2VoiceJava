@@ -269,6 +269,18 @@ public class Expr {
             typeCommand = typeCommand.substring(5, typeCommand.length() - 2); // remove "type " and "\n"
             // TODO: Class name must be Capitalized
             return typeCommand + " dot class\n";
+        } else if (expression instanceof ConditionalExpr){
+            StringBuilder res = new StringBuilder("conditional expression\n");
+            Expression condition = ((ConditionalExpr) expression).getCondition();
+            res.append(analysisExpr(condition));
+            Expression thenExpression = ((ConditionalExpr) expression).getThenExpr();
+            res.append(analysisExpr(thenExpression));
+            Expression elseExpression = ((ConditionalExpr) expression).getElseExpr();
+            res.append(analysisExpr(elseExpression));
+            return res.toString();
+        } else if (expression instanceof NullLiteralExpr){
+            // TODO: support later
+            return "string null\n";
         }
         else return "";
     }

@@ -76,6 +76,8 @@ public class ParameterAnalysis {
         if (args.length == 3 && args[1].equals("o")){
             File inputDir = new File(args[0]);
             File outputDir = new File(args[2]);
+            System.out.println("inputDir: " + inputDir);
+            System.out.println("outputDir: " + outputDir);
             if (!inputDir.exists() || !outputDir.exists()){
                 System.out.println("输入或输出文件不存在");
                 return;
