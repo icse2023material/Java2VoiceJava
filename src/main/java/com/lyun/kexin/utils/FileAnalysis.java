@@ -143,9 +143,8 @@ public class FileAnalysis {
       res.append("class ").append(StringUtils.wordSplit(classOrInterfaceDeclaration.getName().getIdentifier()))
           .append("\n");
 
-      if ((classOrInterfaceDeclaration.getImplementedTypes().size() > 0 ||
-          classOrInterfaceDeclaration.getExtendedTypes().size() > 0 ||
-          classOrInterfaceDeclaration.getImplementedTypes().size() > 0)) {
+      // Type Parameter
+      if(classOrInterfaceDeclaration.getTypeParameters().size()>0){
         for (int i = 0; i < classOrInterfaceDeclaration.getTypeParameters().size(); i++) {
           res.append("type ")
               .append(StringUtils
