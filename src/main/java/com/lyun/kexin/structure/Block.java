@@ -179,7 +179,8 @@ public class Block {
         } else if (expression instanceof AssignExpr) {
             //赋值块
             res.append("let ");
-            res.append(Expr.analysisExpr(((AssignExpr) expression).getTarget()));
+            String variableName =Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n', ' ');
+            res.append(variableName);
             res.append("equal expression\n");
             res.append(Expr.analysisExpr(((AssignExpr) expression).getValue()));
             res.append("\n");
