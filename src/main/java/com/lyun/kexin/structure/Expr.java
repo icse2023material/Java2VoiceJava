@@ -95,7 +95,8 @@ public class Expr {
                             res.append(tmp.getTypeArguments().get().get(i));
                         }
                     }
-                    if (tmp.getTypeArguments().get().size() == 0) {
+
+                    if (((ObjectCreationExpr) expression).getArguments().size() == 0) {
                         res.append("\nmove next");
                     }
                 } else {

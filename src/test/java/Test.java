@@ -13,7 +13,7 @@ public class Test {
 //        ParameterAnalysis.analysis(arg);
 
 //         String[] arg = {"/Users/stefanzan/Research/2021/dubbo/dubbo-cluster/src/main/java/org/apache/dubbo/rpc/cluster/ClusterScopeModelInitializer.java"};
-        String[] arg = {"/Users/stefanzan/Research/2021/JavaToVoiceJava/test/testcases/Pair.java"};
+        String[] arg = {"/Users/stefanzan/Research/2021/JavaToVoiceJava/test/testcases/ListHelper.java"};
         ParameterAnalysis.analysis(arg);
     }
 }

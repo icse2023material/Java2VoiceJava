@@ -1,5 +1,6 @@
 public class ListHelper {
     public boolean containsKeyword(List<Unit> units, String keyword) {
+        List<Unit> segment = new ArrayList<Unit>();
         if (!units.get(i).getKeyword().equals(keyword)) {
             return true;
         }
