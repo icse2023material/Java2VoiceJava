@@ -129,9 +129,13 @@ public class Block {
                 }
                 analysisStmt(((Statement) childNode), res);
             }
-            Statement lastStmt = (Statement) nodeList.get(nodeList.size() - 1);
+            int index = nodeList.size()-1;
+            Node lastNode =nodeList.get(index);
+            while(index >0 && lastNode instanceof LineComment){
+                lastNode =nodeList.get(--index);
+            }
             // If ReturnStmt, not move next needed.
-            if (!(lastStmt instanceof ReturnStmt)) {
+            if (!(lastNode instanceof ReturnStmt)) {
                 res.append("move next\n");
             }
         } else {

@@ -67,13 +67,24 @@ public class TypeUtils {
                             tn = "list of " + StringUtils.wordSplit(((ArrayType) types.get(i)).getComponentType().toString());
                         }else {
                             ClassOrInterfaceType cor = ((ClassOrInterfaceType) types.get(i));
-                            tn = StringUtils.wordSplit(cor.getName().getIdentifier());
+                            if(cor.getTypeArguments().isPresent()){
+                                tn = "\n" + getType(cor);
+                            } else {
+                                tn = StringUtils.wordSplit(cor.getName().getIdentifier());
+                            }
                         }
                     }
                     if (i != types.size() -1){
-                        res.append(tn).append(" and ");
+                        if(!tn.startsWith("\n")){
+                            res.append(tn).append(" and ");
+                        } else {
+                            res.append(tn);
+                        }
                     }else {
                         res.append(tn);
+                    }
+                    if(i == types.size() -1 && tn.startsWith("\n")){ // move out of arguments
+                        res.append("\nmove next");
                     }
                 }
                 if(types.size()==0){

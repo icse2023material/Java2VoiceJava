@@ -1,8 +1,6 @@
 public class ListHelper {
-    public boolean containsKeyword(List<Unit> units, String keyword) {
-        List<Unit> segment = new ArrayList<Unit>();
-        if (!units.get(i).getKeyword().equals(keyword)) {
-            return true;
-        }
+    public Pair<List<Unit>, List<Unit>> splitList(List<Unit> units, String splitAt) {
+        List<Unit> left = new ArrayList<Unit>();
+        return new Pair<List<Unit>, List<Unit>>(left, units);
     }
 }

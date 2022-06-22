@@ -14,7 +14,7 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import com.lyun.kexin.structure.Block;
 import com.lyun.kexin.structure.Expr;
-
+import com.lyun.kexin.utils.TypeUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -182,7 +182,9 @@ public class FileAnalysis {
             res.append("static ");
           res.append("function ");
           res.append(StringUtils.wordSplit(methodDeclaration.getName().getIdentifier())).append(" \n");
-          res.append("type ").append(StringUtils.wordSplit(methodDeclaration.getType().toString())).append(" \n");
+          Type methodType = methodDeclaration.getType();
+          res.append(TypeUtils.getType(methodType));
+//          res.append("type ").append(StringUtils.wordSplit(methodDeclaration.getType().toString())).append(" \n");
           if (methodDeclaration.getParameters().size() > 0) {
             for (Parameter parameter : methodDeclaration.getParameters()) {
               // res.append("variable
