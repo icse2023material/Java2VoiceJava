@@ -34,7 +34,11 @@ public class Expr {
             else if (((IntegerLiteralExpr) expression).getValue().startsWith("0"))
                 r = 8;
             if (r != 10) {
-                return "int " + ((IntegerLiteralExpr) expression).getValue() + "\n";
+                String value = ((IntegerLiteralExpr) expression).getValue();
+                if(value.equals("0")){
+                    value = "zero";
+                }
+                return "int " + value + "\n";
             }
             String tmp = ((IntegerLiteralExpr) expression).getValue();
             tmp = String.valueOf(Integer.valueOf(tmp, r));
@@ -150,6 +154,11 @@ public class Expr {
                 } else {
                     res.insert(0, analysisExpr(scopeExpr));
                     //res.append("\n");
+                    // workaround for function chain call.
+                    int lastIndexOfMoveNext = res.lastIndexOf("move next");
+                    if(lastIndexOfMoveNext>0){
+                        res.replace(lastIndexOfMoveNext,res.length(),"");
+                    }
                 }
             }
             res.append("call ")
@@ -164,7 +173,8 @@ public class Expr {
             //跳出参数
             res.append("move next\n");
             //跳出call chain,因为涉及到递归，只有最外层才能跳出call chain
-            // res.append("move next\n");
+            // 内部递归多加的move next需要去掉
+             res.append("move next\n");
 
 
             return res.toString();
