@@ -290,8 +290,7 @@ public class Expr {
             res.append(analysisExpr(elseExpression));
             return res.toString();
         } else if (expression instanceof NullLiteralExpr){
-            // TODO: support later
-            return "string null\n";
+            return "expression null\n";
         }
         else return "";
     }

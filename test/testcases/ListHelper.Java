@@ -7,7 +7,7 @@ import cn.edu.lyun.kexin.text2pattern.pattern.Unit;
 
 public class ListHelper {
 
-    public boolean containsKeyword(List<Unit> units, String keyword) {
+    public void containsKeyword(List<Unit> units, String keyword) {
         for (int i = 0; i < units.size(); i++) {
             if (units.get(i).getKeyword().equals(keyword)) {
                 return true;

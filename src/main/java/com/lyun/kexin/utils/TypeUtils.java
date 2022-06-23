@@ -100,6 +100,8 @@ public class TypeUtils {
             //基本类型
             PrimitiveType type = (PrimitiveType) varType;
             res.append("type ").append(StringUtils.wordSplit(type.toString())).append("\n");
+        } else if (varType instanceof  VoidType){
+            res.append("type void\n");
         }
         return res.toString();
     }
