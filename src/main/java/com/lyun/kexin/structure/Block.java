@@ -96,7 +96,7 @@ public class Block {
             }
             res.append("move next\n");
         } else if (statement instanceof SwitchStmt) {
-            res.append("define switch\b");
+            res.append("define switch\n");
             //value
             res.append(Expr.analysisExpr(((SwitchStmt) statement).getSelector()));
             //entries
