@@ -33,10 +33,11 @@ public class Block {
             res.append("define if\n");
             IfStmt ifStmt = ((IfStmt) statement);
             res.append(Expr.analysisExpr(ifStmt.getCondition()));
-            res.append("move next\n");
             if (ifStmt.getThenStmt() instanceof BlockStmt) {
                 analysisBlock(res, ((BlockStmt) ifStmt.getThenStmt()));
-                res.replace(res.length() - "move next\n".length(), res.length() - 1, "");
+//                if(res.substring(res.length() - "move next\n".length(),res.length()).equals("move next\n")){
+//                    res.replace(res.length() - "move next\n".length(), res.length() - 1, "");
+//                }
             } else if (ifStmt.getThenStmt() instanceof ExpressionStmt) {
                 res.append(analysisExpressionStmt(((ExpressionStmt) ifStmt.getThenStmt())));
             }
@@ -45,11 +46,13 @@ public class Block {
                 if (ifStmt.getElseStmt().isPresent()) {
                     if (ifStmt.getElseStmt().get() instanceof BlockStmt) {
                         analysisBlock(res, ((BlockStmt) ifStmt.getElseStmt().get()));
-                        res.replace(res.length() - "move next\n".length(), res.length() - 1, "");
                     } else if (ifStmt.getElseStmt().get() instanceof ExpressionStmt) {
                         res.append(analysisExpressionStmt(((ExpressionStmt) ifStmt.getElseStmt().get())));
                     }
                 }
+            } else {
+                res.append("move next\n");
+                res.append("move next\n");
             }
         } else if (statement instanceof ForStmt) {
             //for循环
@@ -78,6 +81,8 @@ public class Block {
             }
         } else if (statement instanceof BreakStmt) {
             res.append("break\n");
+        } else if (statement instanceof ContinueStmt) {
+            res.append("continue\n");
         } else if (statement instanceof WhileStmt) {
             WhileStmt whileStmt = ((WhileStmt) statement);
             res.append("define while\n");
@@ -135,7 +140,7 @@ public class Block {
                 lastNode =nodeList.get(--index);
             }
             // If ReturnStmt, not move next needed.
-            if (!(lastNode instanceof ReturnStmt)) {
+            if (!(lastNode instanceof ReturnStmt) && !(lastNode instanceof  ContinueStmt) && !(lastNode instanceof  BreakStmt)) {
                 res.append("move next\n");
             }
         } else {
@@ -166,24 +171,24 @@ public class Block {
         } else if (expression instanceof MethodCallExpr) {
             //调用方法
             res.append(Expr.analysisExpr(expression));
-            res.append("move next\n");
-            String[] strings = res.toString().split("\n");
-            int i = 0;
-            while (strings[strings.length - 1 - i].equals("move next")) {
-                i++;
-            }
-            if (i > 1) {
-                StringBuilder tmp = new StringBuilder();
-                for (int l = 0; l < strings.length - i; l++) {
-                    tmp.append(strings[l]).append("\n");
-                }
-                res = new StringBuilder(tmp);
-                res.append("move next statement\n");
-            }
+//            res.append("move next\n");
+//            String[] strings = res.toString().split("\n");
+//            int i = 0;
+//            while (strings[strings.length - 1 - i].equals("move next")) {
+//                i++;
+//            }
+//            if (i > 1) {
+//                StringBuilder tmp = new StringBuilder();
+//                for (int l = 0; l < strings.length - i; l++) {
+//                    tmp.append(strings[l]).append("\n");
+//                }
+//                res = new StringBuilder(tmp);
+//                res.append("move next statement\n");
+//            }
         } else if (expression instanceof AssignExpr) {
             //赋值块
             res.append("let ");
-            String variableName =Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n', ' ');
+            String variableName =Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n', ' ').substring(9);
             res.append(variableName);
             res.append("equal expression\n");
             res.append(Expr.analysisExpr(((AssignExpr) expression).getValue()));

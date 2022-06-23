@@ -216,7 +216,7 @@ public class Expr {
             String unaryExprInVoiceJava = analysisExpr(unaryExpr.getExpression());
             // i++, ++i case
             if(unaryExprInVoiceJava.startsWith("variable")){
-                unaryExprInVoiceJava = unaryExprInVoiceJava.substring(8);
+                unaryExprInVoiceJava = unaryExprInVoiceJava.substring(9);
             }
             UnaryExpr.Operator operator = unaryExpr.getOperator();
             if (operator.isPostfix()) {
