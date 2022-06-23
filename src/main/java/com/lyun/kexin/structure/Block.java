@@ -188,7 +188,10 @@ public class Block {
         } else if (expression instanceof AssignExpr) {
             //赋值块
             res.append("let ");
-            String variableName =Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n', ' ').substring(9);
+            String variableName =Expr.analysisExpr(((AssignExpr) expression).getTarget()).replace('\n', ' '); //.substring(9);
+            if(variableName.startsWith("variable")){
+                variableName = variableName.substring(9);
+            }
             res.append(variableName);
             res.append("equal expression\n");
             res.append(Expr.analysisExpr(((AssignExpr) expression).getValue()));
