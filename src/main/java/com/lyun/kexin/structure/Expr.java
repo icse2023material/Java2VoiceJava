@@ -162,6 +162,10 @@ public class Expr {
                     }
                 }
             }
+            // only support a dot b call c, not a dot\ncall c.
+            if(res.lastIndexOf(" dot ") > 0){
+               res.replace(res.length()-1,res.length()," ");
+            }
             res.append("call ")
                     .append(StringUtils.wordSplit(methodCallExpr.getNameAsString()))
                     .append("\n");
