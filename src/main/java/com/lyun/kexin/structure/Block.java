@@ -47,7 +47,9 @@ public class Block {
                 if (elseStmtOptional.isPresent()) {
                     Statement elseStmt = elseStmtOptional.get();
                     if (elseStmt instanceof IfStmt){
-                        analysisStmt(elseStmt, res);
+                        StringBuilder newRes = new StringBuilder();
+                        analysisStmt(elseStmt, newRes);
+                        res.append(newRes.substring("define if\n".length(), newRes.length()));
                     } else if (elseStmt instanceof BlockStmt) {
                         res.append("move next\n");
                         analysisBlock(res, ((BlockStmt) ifStmt.getElseStmt().get()));
