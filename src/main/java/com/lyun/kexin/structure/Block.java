@@ -9,6 +9,7 @@ import com.github.javaparser.ast.stmt.*;
 import com.lyun.kexin.utils.StringUtils;
 import com.lyun.kexin.utils.TypeUtils;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,13 +42,18 @@ public class Block {
             } else if (ifStmt.getThenStmt() instanceof ExpressionStmt) {
                 res.append(analysisExpressionStmt(((ExpressionStmt) ifStmt.getThenStmt())));
             }
-            if (((IfStmt) statement).hasElseBlock()) {
-                res.append("move next\n");
-                if (ifStmt.getElseStmt().isPresent()) {
-                    if (ifStmt.getElseStmt().get() instanceof BlockStmt) {
+            if (((IfStmt) statement).hasElseBranch()) {
+                Optional<Statement> elseStmtOptional = ifStmt.getElseStmt();
+                if (elseStmtOptional.isPresent()) {
+                    Statement elseStmt = elseStmtOptional.get();
+                    if (elseStmt instanceof IfStmt){
+                        analysisStmt(elseStmt, res);
+                    } else if (elseStmt instanceof BlockStmt) {
+                        res.append("move next\n");
                         analysisBlock(res, ((BlockStmt) ifStmt.getElseStmt().get()));
-                    } else if (ifStmt.getElseStmt().get() instanceof ExpressionStmt) {
-                        res.append(analysisExpressionStmt(((ExpressionStmt) ifStmt.getElseStmt().get())));
+                    } else if (elseStmt instanceof ExpressionStmt) {
+                        res.append("move next\n");
+                        res.append(analysisExpressionStmt(((ExpressionStmt) elseStmt)));
                     }
                 }
             } else {
