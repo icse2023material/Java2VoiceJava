@@ -1,13 +1,13 @@
-package com.lyun.kexin.structure;
+package com.anonymous.kexin.structure;
 
+import com.anonymous.kexin.utils.StringUtils;
+import com.anonymous.kexin.utils.TypeUtils;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.comments.LineComment;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.stmt.*;
-import com.lyun.kexin.utils.StringUtils;
-import com.lyun.kexin.utils.TypeUtils;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -102,7 +102,7 @@ public class Block {
                 ExpressionStmt expressionStmt = whileStmt.getBody().asExpressionStmt();
                 res.append(Expr.analysisExpr(expressionStmt.getExpression()));
             }
-            res.append("move next\n");
+//            res.append("move next\n");
         } else if (statement instanceof SwitchStmt) {
             res.append("define switch\n");
             //value

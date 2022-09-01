@@ -1,7 +1,7 @@
-package com.lyun.kexin.structure;
+package com.anonymous.kexin.structure;
 
+import com.anonymous.kexin.utils.TypeUtils;
 import com.github.javaparser.ast.type.Type;
-import com.lyun.kexin.utils.TypeUtils;
 
 import java.lang.reflect.Parameter;
 

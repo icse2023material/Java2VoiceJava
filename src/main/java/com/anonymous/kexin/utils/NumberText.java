@@ -1,4 +1,4 @@
-package com.lyun.kexin.utils;
+package com.anonymous.kexin.utils;
 
 /*
  * Copyright 2012 na.shi.wu.you (raistlic@gmail.com)
